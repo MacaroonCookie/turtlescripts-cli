@@ -13,11 +13,11 @@ class TurtleScripts(object):
 
   def __geturl__(self, uri):
     """ """
-    return "%s://%s/%s".format(self.TURTLESCRIPTS_PROTOCOL, self.TURTLESCRIPTS_API_URL, uri)
+    return "{0}://{1}/{2}".format(self.TURTLESCRIPTS_PROTOCOL, self.TURTLESCRIPTS_API_URL, uri)
 
   def getProject(self, project_id):
     """ """
-    url = self.__geturl__('getProject/%s'.format(project_id))
+    url = self.__geturl__('getProject/{0}'.format(project_id))
     project_response = requests.get(url)
     if( project_response.status_code != requests.codes.ok ):
       raise Exception('Failed to contact TurtleScripts.com')
@@ -25,8 +25,8 @@ class TurtleScripts(object):
     project_json = project_response.json()
 
     if( project_json['success'] == False ):
-      raise Exception("Failed to retrieve project '%s' from TurtleScripts.com" \
-                      ": %s".format(project_id, project_json['errors']['id']))
+      raise Exception("Failed to retrieve project '{0}' from TurtleScripts.com" \
+                      ": {1}".format(project_id, project_json['errors']['id']))
 
     return project_json
 

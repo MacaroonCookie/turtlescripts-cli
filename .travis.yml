@@ -9,7 +9,8 @@ python:
 # Dependency Installation
 install:
     - "pip install -r requirements.txt"
+    - "pip install ."
 
 # Test Scripts
 script:
-    - "ls"
+    - "test/turtlescripts_test.py"
