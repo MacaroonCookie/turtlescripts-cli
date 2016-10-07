@@ -9,3 +9,7 @@ python:
 # Dependency Installation
 install:
     - "pip install -r requirements.txt"
+
+# Test Scripts
+script:
+    - "ls"
