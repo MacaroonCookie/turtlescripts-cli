@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
-from TurtleScripts import TurtleScripts
-
-__all__ = ['TurtleScripts']
+from .TurtleScripts import TurtleScripts
 
 def getProject(project_id):
   ts = TurtleScripts()

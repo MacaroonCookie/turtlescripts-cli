@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from TurtleScripts import TurtleScripts
+from turtlescripts import TurtleScripts
 
 import unittest
 
