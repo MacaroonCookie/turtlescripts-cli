@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from .TurtleScripts import TurtleScripts
+from .TurtleScripts import TurtleScripts, TurtleProject, TurtleFile
 
 def getProject(project_id):
   ts = TurtleScripts()
