@@ -11,7 +11,7 @@ setup(
     author = 'Seth Cook',
     author_email = 'cooker52@gmail.com',
     url = '',
-    packages = [ 'turtlescripts' ],
+    packages = [ 'TurtleScripts' ],
     license = __license__,
     classifiers = [
         'Programming Language :: Python :: 2.7',

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from . import TurtleScripts
+from .TurtleScripts import TurtleProject, TurtleScripts, TurtleFile
 
 import sys
 

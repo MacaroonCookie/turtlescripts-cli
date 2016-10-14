@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from datetime import datetime
-from turtlescripts import TurtleScripts, TurtleProject, TurtleFile
+from TurtleScripts import TurtleScripts, TurtleProject, TurtleFile
 
 import unittest
 
