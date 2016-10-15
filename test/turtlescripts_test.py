@@ -7,6 +7,8 @@ import unittest
 
 DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 TEST_PROJECT_ID = 'gjdi6h'
+TEST_RO_FILE_ID = 'gjdifi'
+TEST_RW_FILE_ID = 'gjdifj'
 
 class TestTurtleScripts(unittest.TestCase):
 
@@ -40,15 +42,28 @@ class TestTurtleScripts(unittest.TestCase):
     self.assertEqual(test_project.getUserId(), 3942)
     self.assertEqual(test_project.getUserDateCreated(), datetime.strptime("2015-10-28 22:35:30", DATE_FORMAT))
     self.assertEqual(test_project.getUserIGN(), "")
-    self.assertEqual(test_project.getFileCount(), 0)
+    self.assertEqual(test_project.getFileCount(), 2)
     self.assertIs(type(test_project.getFileTotalSize()), type(1))
-    self.assertEqual(test_project.getFileKeys(), [])
+    self.assertEqual(test_project.getFileKeys(), [{'gjdifj': 'test_dynamic_file_1'}, {'gjdifi': 'test_file_1'}])
     self.assertIs(type(test_project.getCommentCount()), type(1))
     self.assertIs(type(test_project.getVoteCount()), type(1))
     self.assertIs(type(test_project.getVoteAverage()), type(1.1))
     self.assertEqual(test_project.getYouTubeId(), "")
     self.assertEqual(test_project.getYouTubeUrl(), "")
     self.assertEqual(test_project.getBeta(), "")
+
+  def test_get_file(self):
+    test_file = self.ts.getFileObject(TEST_RO_FILE_ID)
+
+    self.assertEqual(test_file.getId(), 1934)
+    self.assertEqual(test_file.getKey(), TEST_RO_FILE_ID)
+    self.assertEqual(test_file.getName(), "test_file_1")
+    self.assertEqual(test_file.getProjectId(), 1609)
+    self.assertEqual(test_file.getDateCreated(), datetime.strptime("2016-10-14 23:59:05", DATE_FORMAT))
+    self.assertIsInstance(test_file.getDateUpdated(), datetime)
+    self.assertEqual(test_file.getSize(), 20)
+    self.assertEqual(test_file.getContent(), 'print("Hello World")')
+    self.assertFalse(test_file.hasDraft())
 
 if( __name__ == '__main__' ):
   unittest.main()

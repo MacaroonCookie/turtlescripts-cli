@@ -9,21 +9,22 @@ class TurtleFile(object):
   def __init__(self, payload):
     self.payload = payload
 
-  def getId(self):              return self.payload['fileID']
+  def getId(self):              return int(self.payload['fileID'])
   def getKey(self):             return self.payload['key']
   def getName(self):            return self.payload['fileName']
-  def hasDraft(self):           return False if( self.payload['hasDraft'] == 0 ) else True
-  def getSize(self):            return self.payload['fileSize']
+  def getProjectId(self):       return int(self.payload['fileProjectID'])
+  def hasDraft(self):           return False if( 'hasDraft' not in self.payload or self.payload['hasDraft'] == 0 ) else True
+  def getSize(self):            return 0 if( self.payload['fileSize'] is None ) else int(self.payload['fileSize'])
   def getDateCreated(self):     return datetime.strptime(self.payload['fileCreatedDate'], self.__DATE_FORMAT)
   def getDateUpdated(self):     return datetime.strptime(self.payload['fileUpdatedDate'], self.__DATE_FORMAT)
   def getContent(self):         return self.payload['fileData'] if( 'fileData' in self.payload ) else None
-  def getProjectId(self):       return self.payload['fileProjectID']
 
 class TurtleProject(object):
   __DATE_FORMAT = '%Y-%m-%d %H:%M:%S'
 
   def __init__(self, payload):
     self.payload = payload
+  def getProjectId(self):       return int(self.payload['fileProjectID'])
 
   # Project specific
   def getId(self):              return int(self.payload['postID'])
@@ -66,7 +67,6 @@ class TurtleProject(object):
 
 class TurtleScripts(object):
   """  """
-
   TURTLESCRIPTS_API_URL = 'api.turtlescripts.com'
   TURTLESCRIPTS_PROTOCOL = 'http'
 
@@ -76,6 +76,26 @@ class TurtleScripts(object):
   def __geturl__(self, uri):
     """ """
     return "{0}://{1}/{2}".format(self.TURTLESCRIPTS_PROTOCOL, self.TURTLESCRIPTS_API_URL, uri)
+
+  def __get__(self, url):
+    """ """
+    response = requests.get(url)
+    if( response.status_code != requests.codes.ok ):
+      raise Exception('Failed to contact TurtleScrtips.com')
+
+    response_json = response.json()
+
+    if( 'success' not in response_json or
+        'payload' not in response_json or
+        'errors' not in response_json or
+        'result_time' not in response_json ):
+      raise Exception('Received malformed response from TurtleScripts.com')
+
+    if( response_json['success'] == False ):
+      raise Exception("Failed to retreive object from TurtleScripts.com" \
+                      ": {0}".format(response_json['errors']['id']))
+
+    return response_json['payload']
 
   def getProject(self, project_id):
     """ """
@@ -91,3 +111,10 @@ class TurtleScripts(object):
                       ": {1}".format(project_id, project_json['errors']['id']))
 
     return TurtleProject(project_json['payload'])
+
+  def getFileObject(self, file_id):
+    """ """
+    url = self.__geturl__('getFile/{0}'.format(file_id))
+    file_payload = self.__get__(url)
+    return TurtleFile(file_payload)
+    
