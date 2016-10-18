@@ -112,9 +112,48 @@ class TurtleScripts(object):
 
     return TurtleProject(project_json['payload'])
 
-  def getFileObject(self, file_id):
+  def getFileObject(self, file_key, read_pin=None):
     """ """
-    url = self.__geturl__('getFile/{0}'.format(file_id))
+    url = self.__geturl__('getFile/{0}'.format(file_key))
     file_payload = self.__get__(url)
     return TurtleFile(file_payload)
-    
+
+  def saveFile(self, file_key, read_pin=None, overwrite=False, file_name=None, directory=None):
+    file_object = self.getFileObject(file_key, read_pin)
+
+    if( directory is None ):
+      directory = os.getcwdu()
+
+    if( not os.path.exists(directory) ):
+      raise Exception("Directory '{0}' does not exist".format(directory))
+
+    if( file_name is None ):
+      file_name = file_object.getName()
+
+    file_name = os.path.join(directory, file_name)
+
+    if( os.path.exists(file_name) and not overwrite ):
+      raise Exception("File '{0}' already exists.".format(file_name))
+
+    file_handle = open(file_name, 'w')
+
+    file_handle.write(file_object.getContent())
+    file_handle.close()
+
+  def uploadFile(self, file_key, write_pin, file_name):
+    if( not os.path.exists(file_name) ):
+      raise Exception("File '{0}' does not exist.".format(file_name))
+
+    file_handle = open(file_name, 'r')
+    data_content = file_handle.readall()
+    file_handle.close()
+
+    url = self.__geturl__("putFileRaw/{0}".format(file_key))
+    data = "pin={0}&data={1}".format(write_pin, data_content)
+
+    response = requests.post(url, data=data)
+
+    if( response.status_code != requests.codes.ok ):
+      raise Exception('Failed to contact TurtleScrtips.com, submit file, or file content is equal to what is placed.')
+
+    return True
